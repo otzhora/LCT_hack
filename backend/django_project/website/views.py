@@ -29,19 +29,19 @@ class TaskView(APIView):
         task = Task.objects.get(url=url)
         return Response(task.task)
 
-    def post(self, request, task_name):
+    def post(self, request, url):
         body = json.loads(request.body)
-        task = Task.objects.get(url=task_name)
+        task = Task.objects.get(url=url)
 
         username = body["username"]
         text = body["text"]
         lang = body["lang"]
 
         converter = CodeConverter(STUDENT_SOLUTIONS_PATH)
-        converter.text_to_code(username, task_name, text, lang)
+        converter.text_to_code(username, url, text, lang)
 
         task_path = task.path
-        solution_path = converter.get_code_path(username, task_name)
+        solution_path = converter.get_code_path(username, url)
 
         runner = Languages[lang](solution_path, task_path, hooks={"style"})
         res = runner.run_code()
