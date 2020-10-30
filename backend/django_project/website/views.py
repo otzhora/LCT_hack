@@ -1,13 +1,9 @@
-import os
-import sys
-from pathlib import Path
-
 from django.http import HttpResponse
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-from code.code_runners import *
-from code.code_converters import *
+from code_interaction.code_runners import *
+from code_interaction.code_converters import *
 
 
 def home(request):
