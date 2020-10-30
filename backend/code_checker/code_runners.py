@@ -78,3 +78,9 @@ class CppRunner(BaseRunner):
 
     def pre_run(self):
         self.compile_code()
+
+
+Languages = {
+    "Python": PythonRunner,
+    "Cpp": CppRunner
+}
