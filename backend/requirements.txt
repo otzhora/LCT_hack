@@ -5,3 +5,4 @@ pkg-resources==0.0.0
 psycopg2==2.8.6
 pytz==2020.1
 sqlparse==0.4.1
+flake8==3.8.4

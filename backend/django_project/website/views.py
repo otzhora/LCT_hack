@@ -10,5 +10,9 @@ def home(request):
         return HttpResponse("lol")
 
 
-def task(request):
-    pass
+def task(request, task_name):
+    if request.method == "GET":
+        return HttpResponse("print sum of numbers")
+
+    if request.method == "POST":
+        return HttpResponse(request.body)
