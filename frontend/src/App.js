@@ -22,7 +22,7 @@ const theme = createMuiTheme({
         color: "white",
         height: 48,
         padding: "0 30px",
-        margin: "0 10px",
+        margin: "0 0 0 10px",
       },
     },
   },
