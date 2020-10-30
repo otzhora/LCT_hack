@@ -25,8 +25,8 @@ class ArticleView(APIView):
 
 
 class TaskView(APIView):
-    def get(self, request, task_name):
-        task = Task.objects.get(title="Sum of two integers")
+    def get(self, request, url):
+        task = Task.objects.get(url=url)
         return Response(task.task)
 
     def post(self, request, task_name):

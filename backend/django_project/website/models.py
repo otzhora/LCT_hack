@@ -13,7 +13,7 @@ class Task(models.Model):
     task = models.TextField()
     path = models.TextField()
     teacher = models.ForeignKey('Teacher', related_name='tasks', on_delete=models.CASCADE)
-    url = models.SlugField(max_length=130, unique=True)
+    url = models.SlugField(max_length=130, unique=True, default=0)
 
     def __str__(self):
         return self.title
