@@ -16,9 +16,9 @@ class ArticleView(APIView):
         return Response({"articles": "articles"})
 
 
-def task(request, task_name):
-    if request.method == "GET":
-        return HttpResponse("print sum of numbers")
+class TaskView(APIView):
+    def get(self, request, task_name):
+        return Response(["Print sum"])
 
-    if request.method == "POST":
-        return HttpResponse(request.body)
+    def post(self, request, task_name):
+        return Response(request.body)
