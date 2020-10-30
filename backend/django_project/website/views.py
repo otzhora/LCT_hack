@@ -26,15 +26,14 @@ class ArticleView(APIView):
 
 class TaskView(APIView):
     def get(self, request, task_name):
-        task = Task.objects.get(title="Sum of two integers")
+        task = Task.objects.get(url=task_name)
         return Response(task.task)
 
     def post(self, request, task_name):
         body = json.loads(request.body)
-        task = Task.objects.get(title="Sum of two integers")  # TODO: change this
+        task = Task.objects.get(url=task_name)
 
         username = body["username"]
-        task_name = "sum"  # TODO: task_name
         text = body["text"]
         lang = body["lang"]
 
