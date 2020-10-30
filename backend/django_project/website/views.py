@@ -1,5 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+from rest_framework.views import APIView
+from rest_framework.response import Response
 
 # from code.code_runners import *
 # from code.code_converters import *
@@ -8,6 +10,11 @@ from django.http import HttpResponse
 def home(request):
     if request.method == 'GET':
         return HttpResponse("lol")
+
+
+class ArticleView(APIView):
+    def get(self, request):
+        return Response({"articles": "articles"})
 
 
 def task(request, task_name):
