@@ -10,6 +10,7 @@ class CodeConverter:
         }
 
         if not os.path.isdir(self.path_for_student_solutions):
+            print("Dir exists")
             try:
                 os.mkdir(self.path_for_student_solutions)
             except OSError:
@@ -41,6 +42,7 @@ class CodeConverter:
     def text_to_code(self, username, task, text, lang):
         self.create_folder_for_task(username, task)
         path = f"{self.path_for_student_solutions}/{username}/{task}/solution.{self.lang_exts[lang]}"
+        print(path)
 
         with open(path, "w") as f:
             f.write(text)
