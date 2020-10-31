@@ -1,10 +1,10 @@
 import * as React from 'react'
 
-export default function ReadFromFile(){
+export default function ReadFromFile(props){
   let fileReader;
   const handleFileRead = (e)=>{
     const content = fileReader.result;
-    console.log(content);
+    props.onFileLoaded(content)
   }
 
   const handleFileChosen = (file)=>{
