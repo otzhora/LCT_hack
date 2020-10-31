@@ -8,6 +8,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 
 from .models import Task
+from .serializers import TaskSerializer
 from code_interaction.code_runners import *
 from code_interaction.code_converters import *
 
@@ -28,7 +29,8 @@ class ArticleView(APIView):
 class TaskView(APIView):
     def get(self, request, url):
         task = Task.objects.get(url=url)
-        return Response(task.task)
+        serializer = TaskSerializer(task)
+        return Response({"task": serializer.data})
 
     def post(self, request, url):
         body = json.loads(request.body)
