@@ -7,8 +7,9 @@ from collections import defaultdict
 from django.http import HttpResponse
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from django.core import serializers
 
-from .models import Task, Teacher, Student, TaskResult, CodeReview
+from .models import Task, Teacher, Student, TaskResult, CodeReview, Clas
 from .serializers import TaskSerializer
 from code_interaction.code_runners import *
 from code_interaction.code_converters import *
@@ -41,7 +42,9 @@ class TaskView(APIView):
         return Response({"task": serializer.data})
 
     def post(self, request, url):
+        print(request.body)
         body = json.loads(request.body)
+
         task = Task.objects.get(url=url)
 
         username = body["username"]
@@ -94,7 +97,7 @@ class NewTaskView(APIView):
             return Response(f"Task with name {url} already exists")
         title = body["title"][0]
         desc = body["description"][0]
-        teacher = body["teacher"][0]
+
 
         zip_path = f"{ASSIGNMENTS_PATH}/{url}.zip"
         with open(zip_path, "wb+") as f:
@@ -113,8 +116,12 @@ class NewTaskView(APIView):
         task.task = desc
         task.path = task_path
         task.url = url
-        task.teacher = Teacher.objects.get(name=teacher)
         task.save()
+        try:
+            clas = body["clas"][0]
+            task.clas.add(Clas.objects.get(name=clas))
+        except KeyError:
+            print("nuhai bebru")
 
         return Response("Biba")
 
@@ -127,43 +134,66 @@ class ResultView(APIView):
         return Response([i.mark for i in res])
 
 
-users2assignments = defaultdict(list)  # TODO change to db
+class AssignedView(APIView):
+    """
+    GET /assigned/{username} -- list of tasks assigned to user
+    """
+    def get(self, request, username):
+        c = str(Student.objects.get(name=username).Clas)
+        res = list(Task.objects.filter(clas__name=c).values("url", "title"))
+        return Response({"res": res})
 
 
 class AssignView(APIView):
-    def get(self, request, username):
-        return Response(users2assignments[username])
+    """
+    POST /assign {task_url, clas_name} -- assign task to class
 
+    example:
+        {
+            "task_url": "sum",
+            "clas_name": "2B"
+        }
+    """
     def post(self, request):
+        print(request.body)
         body = json.loads(request.body)
-        username = body["username"]
-        url = body["url"]
-        users2assignments[username].append(url)
-        return Response(users2assignments[username])
+        clas = body["clas_name"]
+        url = body["task_url"]
+        task = Task.objects.get(url=url)
+        task.clas.add(Clas.objects.get(name=clas))
+        return Response("Boba")
 
 
 users2review = defaultdict(dict)  # TODO change to db
 
 
-class ReviewView(APIView):
-    def get(self, request, username, url):
-        # student_obj = Student.objects.get(name=username)
-        # task_obj = Task.objects.get(url=url)
-        # res = list(CodeReview.objects.filter(student=student_obj, task=task_obj))
-        if url in users2review[username]:
-            return Response(users2review[username][url])
+class GetReviewView(APIView):
+    """
+    GET /get_review/{username}/{task_url} - get tasks`s review for username
+    """
+    def get(self, request, username, task_url):
+        student = Student.objects.get(name=username)
+        task = Task.objects.get(url=task_url)
+        if student and task:
+            res = CodeReview.objects.filter(student=student, task=task)
+            return Response(res.values("comment"))
         else:
-            return Response({})
+            return Response({"": "No task or student"})
 
+
+class ReviewView(APIView):
+    """
+    POST /review/ {username, task_url, comment}
+    """
     def post(self, request):
 
         body = json.loads(request.body)
         username = body["username"]
-        url = body["url"]
+        task_url = body["task_url"]
         comment = body["comment"]
-        """
+
         student_obj = Student.objects.get(name=username)
-        task_obj = Task.objects.get(url=url)
+        task_obj = Task.objects.get(url=task_url)
 
         review = CodeReview()
         review.student = student_obj
@@ -171,6 +201,4 @@ class ReviewView(APIView):
         review.comment = comment
         review.save()
         return Response("ok")
-        """
-        users2review[username][url] = comment
-        return Response(users2review[username][url])
+

@@ -1,9 +1,11 @@
 from django.contrib import admin
 
-from .models import Teacher, Task, Student, TaskResult
+from .models import Teacher, Task, Student, TaskResult, Clas, CodeReview
 
 admin.site.register(Teacher)
 admin.site.register(Task)
 admin.site.register(TaskResult)
 admin.site.register(Student)
+admin.site.register(Clas)
+admin.site.register(CodeReview)
 
