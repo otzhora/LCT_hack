@@ -28,7 +28,7 @@ function StudentPage(){
   const [solutionText, setSolutionText] = useState('')
   const [result, setResult] = useState(null)
   const loadResult = async (name) =>
-      fetch(`http://localhost:8000/task/${name}`,{
+      fetch(`http://localhost:8000/task/${name}/`,{
         method: 'POST',
         headers: {
           'Content-Type': 'raw'
@@ -52,6 +52,18 @@ function StudentPage(){
   }
   function onFileLoaded(text){
     setSolutionText(text)
+  }
+  function handleResult(result){
+    if(result){
+      const successfulTest = result.map((res)=>{
+        if (res.check) return res;
+      }) 
+      const percentage = successfulTest.length / result.length;
+      return percentage===1 
+      ? <div>SUCCESS 100%</div> 
+      : <div>FAIL {percentage}</div>
+    }
+    else return null
   }
   
   
@@ -79,7 +91,7 @@ function StudentPage(){
         <ReadFromFile onFileLoaded={onFileLoaded}></ReadFromFile>
         <Button onClick={submitCode}> Submit Code</Button>
         <div>Your Score is
-        {result}
+        {handleResult(result)}
         </div>
       </Container>
     </React.Fragment>
