@@ -7,7 +7,7 @@ from django.http import HttpResponse
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-from .models import Task, Teacher
+from .models import Task, Teacher, Student, TaskResult
 from .serializers import TaskSerializer
 from code_interaction.code_runners import *
 from code_interaction.code_converters import *
@@ -55,6 +55,19 @@ class TaskView(APIView):
 
         runner = Languages[lang](solution_path, task_path, hooks={"style"})
         res = runner.run_code()
+
+        student, created1 = Student.objects.get_or_create(
+            name=username,
+        )
+        true_count = 0
+        for i in res:
+            if i["check"] == "True":
+                true_count += 1
+        task_result, created2 = TaskResult.objects.get_or_create(
+            task=task,
+            student=student,
+            mark=true_count/len(res),
+        )
         return Response(res)
 
 
