@@ -28,7 +28,7 @@ class Class(models.Model):
 
 
 class Student(models.Model):
-    Class = models.ForeignKey('Class', related_name="students", on_delete=models.CASCADE)
+    #Class = models.ForeignKey('Class', related_name="students", on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
 
     def __str__(self):
