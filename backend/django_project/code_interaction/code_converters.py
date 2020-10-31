@@ -6,7 +6,8 @@ class CodeConverter:
         self.path_for_student_solutions = path_for_students_solutions
         self.lang_exts = {
             "Python": "py",
-            "Cpp": "cpp"
+            "Cpp": "cpp",
+            "JS": "js"
         }
 
         if not os.path.isdir(self.path_for_student_solutions):

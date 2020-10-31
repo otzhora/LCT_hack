@@ -92,7 +92,13 @@ class CppRunner(BaseRunner):
         self.compile_code()
 
 
+class JsRunner(BaseRunner):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.launch_command = ["node", f"{self.file_path}/solution.js"]
+
 Languages = {
     "Python": PythonRunner,
-    "Cpp": CppRunner
+    "Cpp": CppRunner,
+    "JS": JsRunner,
 }
