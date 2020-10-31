@@ -2,6 +2,7 @@ import os
 from pathlib import Path
 import json
 import subprocess
+from collections import defaultdict
 
 from django.http import HttpResponse
 from rest_framework.views import APIView
@@ -125,3 +126,18 @@ class ResultView(APIView):
         print(student_obj, task_obj)
         res = list(TaskResult.objects.filter(student=student_obj, task=task_obj))
         return Response([i.mark for i in res])
+
+
+users2assignments = defaultdict(list) # TODO change to db
+
+
+class AssignView(APIView):
+    def get(self, request, username):
+        return Response(users2assignments[username])
+
+    def post(self, request):
+        body = json.loads(request.body)
+        username = body["username"]
+        url = body["url"]
+        users2assignments[username].append(url)
+        return Response(users2assignments[username])

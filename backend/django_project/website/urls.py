@@ -2,7 +2,7 @@ from django.urls import path
 
 from . import views
 
-from .views import ArticleView, TaskView, CodeView, NewTaskView, TasksView, ResultView
+from .views import ArticleView, TaskView, CodeView, NewTaskView, TasksView, ResultView, AssignView
 
 
 urlpatterns = [
@@ -12,4 +12,6 @@ urlpatterns = [
     path('code/<slug:username>/<slug:url>/', CodeView.as_view(), name="code"),
     path('new_task', NewTaskView.as_view(), name="new_task"),
     path('results/<slug:username>/<slug:url>/', ResultView.as_view(), name="result"),
+    path('assign/', AssignView.as_view(), name="assign"),
+    path('assigned/<slug:username>', AssignView.as_view(), name="assigned"),
 ]
