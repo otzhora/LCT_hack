@@ -26,12 +26,34 @@ import Async from 'react-async';
 function StudentPage(){
   const editorRef = useRef(null)
   const [solutionText, setSolutionText] = useState('')
+  const [result, setResult] = useState(null)
+  const loadResult = async (name) =>
+      fetch(`http://localhost:8000/task/${name}`,{
+        method: 'POST',
+        headers: {
+          'Content-Type': 'raw'
+        },
+        body: JSON.stringify({
+            username: 'otzhora',
+            text: solutionText,
+            lang: 'Python'
+          })
+      })
+        .then(res => (res.ok ? res : Promise.reject(res)))
+        .then(res => res.json()).then(res=>{setResult(res)})
   function submitCode(){
-    
+    if (solutionText){
+      loadResult('sum')
+    }
+    else {
+      setSolutionText(editorRef.current.text)
+      loadResult('sum')
+    }
   }
   function onFileLoaded(text){
     setSolutionText(text)
   }
+  
   
   useEffect(()=>{editorRef.current.editor.resize()},[])
   return (
@@ -56,6 +78,9 @@ function StudentPage(){
         </div>
         <ReadFromFile onFileLoaded={onFileLoaded}></ReadFromFile>
         <Button onClick={submitCode}> Submit Code</Button>
+        <div>Your Score is
+        {result}
+        </div>
       </Container>
     </React.Fragment>
   );
