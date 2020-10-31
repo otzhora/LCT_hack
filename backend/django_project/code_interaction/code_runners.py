@@ -29,19 +29,25 @@ class BaseRunner:
             style_result = self.check_style()
 
         for test in sorted(self.tests):
+            success = False
             try:
                 student_result = subprocess.check_output(self.launch_command,
                                                          cwd=test,
                                                          timeout=5,
                                                          stderr=subprocess.STDOUT)
                 student_result = str(student_result, "utf-8")
-            except subprocess.TimeoutExpired:
-                student_result = "Timeout"
+                success = True
+            except subprocess.TimeoutExpired as e:
+                student_result = "Time limit exceeded"
+            except subprocess.CalledProcessError as e:
+                student_result = e.output
 
-            with open(f"{test}/correct.txt", 'r') as f:
-                correct_result = f.readlines()
+            check_result = False
+            if success:
+                with open(f"{test}/correct.txt", 'r') as f:
+                    correct_result = f.readlines()
 
-            check_result = check_same(student_result, correct_result)
+                check_result = check_same(student_result, correct_result)
 
             test_results.append({"student_output": student_result,
                                  "style_result": style_result,

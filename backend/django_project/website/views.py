@@ -86,6 +86,7 @@ class CodeView(APIView):
 
 class NewTaskView(APIView):
     def post(self, request):
+        # TODO check if url exists
         zip_test = request.FILES["data"]
         body = dict(request.POST)
         url = body["url"][0]
