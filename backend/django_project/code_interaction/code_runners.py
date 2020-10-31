@@ -29,11 +29,14 @@ class BaseRunner:
             style_result = self.check_style()
 
         for test in sorted(self.tests):
-            student_result = subprocess.check_output(self.launch_command,
-                                                     cwd=test,
-                                                     timeout=5,
-                                                     stderr=subprocess.STDOUT)
-            student_result = str(student_result, "utf-8")
+            try:
+                student_result = subprocess.check_output(self.launch_command,
+                                                         cwd=test,
+                                                         timeout=5,
+                                                         stderr=subprocess.STDOUT)
+                student_result = str(student_result, "utf-8")
+            except subprocess.TimeoutExpired:
+                student_result = "Timeout"
 
             with open(f"{test}/correct.txt", 'r') as f:
                 correct_result = f.readlines()
