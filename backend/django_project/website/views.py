@@ -7,7 +7,7 @@ from django.http import HttpResponse
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-from .models import Task
+from .models import Task, Teacher
 from .serializers import TaskSerializer
 from code_interaction.code_runners import *
 from code_interaction.code_converters import *
@@ -71,6 +71,7 @@ class NewTaskView(APIView):
         url = body["url"][0]
         title = body["title"][0]
         desc = body["description"][0]
+        teacher = body["teacher"][0]
 
         zip_path = f"{ASSIGNMENTS_PATH}/{url}.zip"
         with open(zip_path, "wb+") as f:
@@ -84,6 +85,12 @@ class NewTaskView(APIView):
         subprocess.run(["unzip", zip_path, "-d", f"{ASSIGNMENTS_PATH}"])
         subprocess.run(["rm", zip_path])
 
-        # TODO: add a new task to db
+        task = Task()
+        task.title = title
+        task.task = desc
+        task.path = task_path
+        task.url = url
+        task.teacher = Teacher.objects.get(name=teacher)
+        task.save()
 
         return Response("Biba")
