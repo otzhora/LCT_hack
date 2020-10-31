@@ -61,9 +61,9 @@ class TaskView(APIView):
         )
         true_count = 0
         for i in res:
-            if i["check"] == "True":
+            if i["check"] == True:
                 true_count += 1
-        task_result, created2 = TaskResult.objects.get_or_create(
+        _ = TaskResult.objects.create(
             task=task,
             student=student,
             mark=true_count/len(res),
@@ -114,3 +114,12 @@ class NewTaskView(APIView):
         task.save()
 
         return Response("Biba")
+
+
+class ResultView(APIView):
+    def get(self, request, username, url):
+        student_obj = Student.objects.get(name=username)
+        task_obj = Task.objects.get(url=url)
+        print(student_obj, task_obj)
+        res = list(TaskResult.objects.filter(student=student_obj, task=task_obj))
+        return Response([i.mark for i in res])
