@@ -37,7 +37,7 @@ class BaseRunner:
                                                          stderr=subprocess.STDOUT)
                 student_result = str(student_result, "utf-8")
                 success = True
-            except subprocess.TimeoutExpired as e:
+            except subprocess.TimeoutExpired:
                 student_result = "Time limit exceeded"
             except subprocess.CalledProcessError as e:
                 student_result = e.output
