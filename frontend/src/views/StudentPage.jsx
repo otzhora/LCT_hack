@@ -12,20 +12,12 @@ import {Button, Container} from '@material-ui/core'
 import ReadFromFile from '../components/ReadFromFile';
 import { useState } from 'react';
 import Async from 'react-async';
-// const classes = makeStyles((theme) => ({
-//   root: {
-//     flexGrow: 1,
-//   },
-//   paper: {
-//     padding: theme.spacing(2),
-//     textAlign: 'center',
-//     color: theme.palette.text.secondary,
-//   },
-// }));
 
+const solution = {text:""}
 function StudentPage(){
   const editorRef = useRef(null)
   const [solutionText, setSolutionText] = useState('')
+  const [solutionFile, setSolutionFile] = useState('')
   const [result, setResult] = useState(null)
   const loadResult = async (name) =>
       fetch(`http://localhost:8000/task/${name}/`,{
@@ -34,34 +26,37 @@ function StudentPage(){
           'Content-Type': 'raw'
         },
         body: JSON.stringify({
-            username: 'otzhora',
-            text: solutionText,
+            username: 'lol',
+            text: solution.text,
             lang: 'Python'
           })
       })
         .then(res => (res.ok ? res : Promise.reject(res)))
         .then(res => res.json()).then(res=>{setResult(res)})
   function submitCode(){
-    if (solutionText){
-      loadResult('sum')
-    }
-    else {
-      setSolutionText(editorRef.current.text)
+      solution.text = editorRef.current.editor.getValue()
+      console.log(solution.text)
+      loadResult('sum') 
+  }
+  function submitCodeFromFile(){
+    if (solutionFile){
+      solution.text = solutionFile
+      console.log(solution.text)
       loadResult('sum')
     }
   }
   function onFileLoaded(text){
-    setSolutionText(text)
+    setSolutionFile(text)
   }
   function handleResult(result){
     if(result){
-      const successfulTest = result.map((res)=>{
-        if (res.check) return res;
-      }) 
-      const percentage = successfulTest.length / result.length;
+      const successfulTests = result.filter((res)=>res.check) 
+      const failTests = result.filter((res)=>!res.check)
+      console.log(failTests)
+      const percentage = successfulTests.length / result.length;
       return percentage===1 
       ? <div>SUCCESS 100%</div> 
-      : <div>FAIL {percentage}</div>
+    : <div>FAIL {percentage}{failTests[0].styleResult}</div>
     }
     else return null
   }
@@ -88,8 +83,10 @@ function StudentPage(){
               height={'700px'}
             />
         </div>
+        <Button onClick={submitCode}> Submit Code From Editor</Button>
         <ReadFromFile onFileLoaded={onFileLoaded}></ReadFromFile>
-        <Button onClick={submitCode}> Submit Code</Button>
+        <Button onClick={submitCodeFromFile}> Submit Code From File</Button>
+        
         <div>Your Score is
         {handleResult(result)}
         </div>
