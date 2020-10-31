@@ -61,7 +61,7 @@ class TaskView(APIView):
         )
         true_count = 0
         for i in res:
-            if i["check"] == True:
+            if i["check"]:
                 true_count += 1
         _ = TaskResult.objects.create(
             task=task,
