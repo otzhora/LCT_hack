@@ -6,7 +6,6 @@ const loadTaskText = async ({name}) =>
       .then(res => (res.ok ? res : Promise.reject(res)))
       .then(res => res.json())
 
-
 const TaskStatement = (props) => {
   return (
     <div display="inline" width={"50px"}>
