@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 import json
+import subprocess
 
 from django.http import HttpResponse
 from rest_framework.views import APIView
@@ -69,3 +70,27 @@ class CodeView(APIView):
                 resp.append("".join(f.readlines()))
         return Response(resp)
 
+
+class NewTaskView(APIView):
+    def post(self, request):
+        zip_test = request.FILES["data"]
+        body = dict(request.POST)
+        url = body["url"][0]
+        title = body["title"][0]
+        desc = body["description"][0]
+
+        zip_path = f"{ASSIGNMENTS_PATH}/{url}.zip"
+        with open(zip_path, "wb+") as f:
+            for chunk in zip_test.chunks():
+                f.write(chunk)
+
+        task_path = f"{ASSIGNMENTS_PATH}/{url}"
+        if os.path.isdir(task_path):
+            subprocess.run(["rm", "-rf", task_path])
+
+        subprocess.run(["unzip", zip_path, "-d", f"{ASSIGNMENTS_PATH}"])
+        subprocess.run(["rm", zip_path])
+
+        # TODO: add a new task to db
+
+        return Response("Biba")
