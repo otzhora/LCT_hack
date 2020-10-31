@@ -13,9 +13,12 @@ from .models import Task, Teacher, Student, TaskResult, CodeReview, Clas
 from .serializers import TaskSerializer
 from code_interaction.code_runners import *
 from code_interaction.code_converters import *
+from code_interaction.advanced_code_runner import *
+
 
 ASSIGNMENTS_PATH = Path(os.getcwd()) / "assignments" / "tasks"
 STUDENT_SOLUTIONS_PATH = Path(os.getcwd()) / "assignments" / "students"
+ADVANCED_PATH = Path(os.getcwd()) / "assignments" / "advanced_tasks"
 
 
 def home(request):
@@ -183,7 +186,6 @@ class ReviewView(APIView):
     POST /review/ {username, task_url, comment}
     """
     def post(self, request):
-
         body = json.loads(request.body)
         username = body["username"]
         task_url = body["task_url"]
@@ -199,3 +201,13 @@ class ReviewView(APIView):
         review.save()
         return Response("ok")
 
+class AdvancedView(APIView):
+    def post(self, request):
+        body = json.loads(request.body)
+        git_url = body["git_url"]
+
+        run_script = ADVANCED_PATH / "run.sh"
+        checks_script = ADVANCED_PATH / "pre_run.sh"
+        setup_script = ADVANCED_PATH / "setup.sh"
+        runner = CodeManager(git_url, CodeRunner, setup_script, checks_script, run_script)
+        return Response(runner.run_code())
