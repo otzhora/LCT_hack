@@ -16,7 +16,6 @@ import Async from 'react-async';
 const solution = {text:""}
 function StudentPage(){
   const editorRef = useRef(null)
-  const [solutionText, setSolutionText] = useState('')
   const [solutionFile, setSolutionFile] = useState('')
   const [result, setResult] = useState(null)
   const loadResult = async (name) =>
