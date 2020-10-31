@@ -35,16 +35,16 @@ function App() {
           <Toolbar>
             <ThemeProvider theme={theme}>
             <Button href='/about'>
-              Home       
+              <span className="button-text">Home</span>       
             </Button>
             <Button href='/teacher-page'>
-              Teacher page
+            <span className="button-text">Teacher page</span>
             </Button>
             <Button href='/student-page'>
-              Student Page
+            <span className="button-text">Student Page</span>
             </Button>
             <Button href='/login'>
-              Login
+            <span className="button-text">Login</span>
             </Button>
             </ThemeProvider> 
           </Toolbar>

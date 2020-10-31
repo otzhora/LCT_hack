@@ -1,9 +1,31 @@
 import React from 'react'
+import Async from 'react-async';
 
-const TaskStatement = () => {
+const loadTaskText = async ({name}) =>
+    fetch(`http://localhost:8000/task/${name}`)
+      .then(res => (res.ok ? res : Promise.reject(res)))
+      .then(res => res.json())
+
+
+const TaskStatement = (props) => {
   return (
     <div display="inline" width={"50px"}>
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+      <Async promiseFn={loadTaskText} name={props.name}>
+        {({ data, err, isLoading }) => {
+          if (isLoading) return "Loading..."
+          if (err) return `Something went wrong: ${err.message}`
+
+          if (data)
+            return (
+              <div>
+                <h1>{data.task.title}</h1>
+                {data.task.task}
+                Teacher id
+                {data.task.teacher_id}
+              </div>
+            )
+        }}
+      </Async>
     </div>
   );
 }

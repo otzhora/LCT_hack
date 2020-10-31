@@ -9,6 +9,9 @@ import {useRef} from 'react';
 import TaskListStudent from '../components/TaskListStudent'
 import TaskStatement from '../components/TaskStatement'
 import {Button, Container} from '@material-ui/core'
+import ReadFromFile from '../components/ReadFromFile';
+import { useState } from 'react';
+import Async from 'react-async';
 // const classes = makeStyles((theme) => ({
 //   root: {
 //     flexGrow: 1,
@@ -22,9 +25,14 @@ import {Button, Container} from '@material-ui/core'
 
 function StudentPage(){
   const editorRef = useRef(null)
+  const [solutionText, setSolutionText] = useState('')
   function submitCode(){
-
+    
   }
+  function onFileLoaded(text){
+    setSolutionText(text)
+  }
+  
   useEffect(()=>{editorRef.current.editor.resize()},[])
   return (
     <React.Fragment>
@@ -33,7 +41,7 @@ function StudentPage(){
         
         <div display="flex">
           
-          <TaskStatement></TaskStatement>
+          <TaskStatement name='sum'></TaskStatement>
         </div>
         
         <div id="editor">
@@ -46,6 +54,7 @@ function StudentPage(){
               height={'700px'}
             />
         </div>
+        <ReadFromFile onFileLoaded={onFileLoaded}></ReadFromFile>
         <Button onClick={submitCode}> Submit Code</Button>
       </Container>
     </React.Fragment>
