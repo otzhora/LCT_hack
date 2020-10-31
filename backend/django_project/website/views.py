@@ -46,3 +46,16 @@ class TaskView(APIView):
         runner = Languages[lang](solution_path, task_path, hooks={"style"})
         res = runner.run_code()
         return Response(res)
+
+
+class CodeView(APIView):
+    def get(self, request, username, url):
+        converter = CodeConverter(STUDENT_SOLUTIONS_PATH)
+        solution_path = converter.get_code_path(username, url)
+
+        solutions = [f"{solution_path}/{solution}" for solution in os.listdir(solution_path)]
+        resp = []
+        for solution in solutions:
+            with open(solution, "r") as f:
+                resp.append("".join(f.readlines()))
+        return Response(resp)

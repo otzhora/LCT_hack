@@ -1,9 +1,10 @@
 from django.urls import path
 
 from . import views
-from .views import ArticleView, TaskView
+from .views import ArticleView, TaskView, CodeView
 
 urlpatterns = [
     path('', ArticleView.as_view(), name='home'),
-    path('task/<slug:url>/', TaskView.as_view(), name="task")
+    path('task/<slug:url>/', TaskView.as_view(), name="task"),
+    path('code/<slug:username>/<slug:url>/', CodeView.as_view(), name="code")
 ]
