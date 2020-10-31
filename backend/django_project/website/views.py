@@ -86,10 +86,11 @@ class CodeView(APIView):
 
 class NewTaskView(APIView):
     def post(self, request):
-        # TODO check if url exists
         zip_test = request.FILES["data"]
         body = dict(request.POST)
         url = body["url"][0]
+        if Task.objects.filter(url=url).exists():
+            return Response(f"Task with name {url} already exists")
         title = body["title"][0]
         desc = body["description"][0]
         teacher = body["teacher"][0]
