@@ -164,9 +164,6 @@ class AssignView(APIView):
         return Response("Boba")
 
 
-users2review = defaultdict(dict)  # TODO change to db
-
-
 class GetReviewView(APIView):
     """
     GET /get_review/{username}/{task_url} - get tasks`s review for username
