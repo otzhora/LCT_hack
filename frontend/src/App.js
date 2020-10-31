@@ -7,7 +7,7 @@ import TeacherPage from './views/TeacherPage'
 import LoginForm from './views/LoginForm'
 // import NavigationPanel from './components/NavigationPanel'
 import AppBar from '@material-ui/core/AppBar';
-import {Toolbar, Button, rgbToHex} from '@material-ui/core/';
+import {Toolbar, Button} from '@material-ui/core/';
 import {createMuiTheme} from '@material-ui/core/styles'
 import {ThemeProvider} from '@material-ui/core'
 const theme = createMuiTheme({
@@ -34,17 +34,17 @@ function App() {
         <AppBar position="static">
           <Toolbar>
             <ThemeProvider theme={theme}>
-            <Button>
-              <Link to="/about">Home</Link>        
+            <Button href='/about'>
+              Home       
             </Button>
-            <Button>
-              <Link to="/teacher-page">Teacher page</Link>
+            <Button href='/teacher-page'>
+              Teacher page
             </Button>
-            <Button>
-              <Link to="/student-page">Student Page</Link>
+            <Button href='/student-page'>
+              Student Page
             </Button>
-            <Button>
-              <Link to="/login">Login</Link>  
+            <Button href='/login'>
+              Login
             </Button>
             </ThemeProvider> 
           </Toolbar>
@@ -55,8 +55,8 @@ function App() {
          <IndexPage></IndexPage>
        </Route>
        <Route path="/teacher-page"><TeacherPage></TeacherPage></Route>
-       <Route path="/student-page" render={StudentPage} />        
-       <Route path="/login" render={LoginForm} />      
+       <Route path="/student-page"><StudentPage></StudentPage></Route>        
+       <Route path="/login"><LoginForm></LoginForm></Route>      
       </Router>  
     </section>
   );
