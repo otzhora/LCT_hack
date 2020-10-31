@@ -31,10 +31,13 @@ class BaseRunner:
         for test in sorted(self.tests):
             success = False
             try:
+                with open(f"{test}/input.txt", "r") as f:
+                    student_in = "".join(f.readlines())
                 student_result = subprocess.check_output(self.launch_command,
                                                          cwd=test,
                                                          timeout=5,
-                                                         stderr=subprocess.STDOUT)
+                                                         stderr=subprocess.STDOUT,
+                                                         input=student_in.encode("utf-8"))
                 student_result = str(student_result, "utf-8")
                 success = True
             except subprocess.TimeoutExpired:

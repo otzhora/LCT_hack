@@ -1,2 +1,2 @@
-while True:
-    pass
+a, b = map(int, input().split())
+print(a + b)

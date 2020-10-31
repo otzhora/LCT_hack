@@ -2,18 +2,19 @@ import os
 from pathlib import Path
 import json
 import subprocess
+from collections import defaultdict
 
 from django.http import HttpResponse
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-from .models import Task, Teacher, Student, TaskResult
+from .models import Task, Teacher, Student, TaskResult, CodeReview
 from .serializers import TaskSerializer
 from code_interaction.code_runners import *
 from code_interaction.code_converters import *
 
-ASSIGNMENTS_PATH = Path(os.getcwd())/"assignments"/"tasks"
-STUDENT_SOLUTIONS_PATH = Path(os.getcwd())/"assignments"/"students"
+ASSIGNMENTS_PATH = Path(os.getcwd()) / "assignments" / "tasks"
+STUDENT_SOLUTIONS_PATH = Path(os.getcwd()) / "assignments" / "students"
 
 
 def home(request):
@@ -61,12 +62,12 @@ class TaskView(APIView):
         )
         true_count = 0
         for i in res:
-            if i["check"] == True:
+            if i["check"]:
                 true_count += 1
         _ = TaskResult.objects.create(
             task=task,
             student=student,
-            mark=true_count/len(res),
+            mark=true_count / len(res),
         )
         return Response(res)
 
@@ -86,10 +87,11 @@ class CodeView(APIView):
 
 class NewTaskView(APIView):
     def post(self, request):
-        # TODO check if url exists
         zip_test = request.FILES["data"]
         body = dict(request.POST)
         url = body["url"][0]
+        if Task.objects.filter(url=url).exists():
+            return Response(f"Task with name {url} already exists")
         title = body["title"][0]
         desc = body["description"][0]
         teacher = body["teacher"][0]
@@ -121,6 +123,54 @@ class ResultView(APIView):
     def get(self, request, username, url):
         student_obj = Student.objects.get(name=username)
         task_obj = Task.objects.get(url=url)
-        print(student_obj, task_obj)
         res = list(TaskResult.objects.filter(student=student_obj, task=task_obj))
         return Response([i.mark for i in res])
+
+
+users2assignments = defaultdict(list)  # TODO change to db
+
+
+class AssignView(APIView):
+    def get(self, request, username):
+        return Response(users2assignments[username])
+
+    def post(self, request):
+        body = json.loads(request.body)
+        username = body["username"]
+        url = body["url"]
+        users2assignments[username].append(url)
+        return Response(users2assignments[username])
+
+
+users2review = defaultdict(dict)  # TODO change to db
+
+
+class ReviewView(APIView):
+    def get(self, request, username, url):
+        # student_obj = Student.objects.get(name=username)
+        # task_obj = Task.objects.get(url=url)
+        # res = list(CodeReview.objects.filter(student=student_obj, task=task_obj))
+        if url in users2review[username]:
+            return Response(users2review[username][url])
+        else:
+            return Response({})
+
+    def post(self, request):
+
+        body = json.loads(request.body)
+        username = body["username"]
+        url = body["url"]
+        comment = body["comment"]
+        """
+        student_obj = Student.objects.get(name=username)
+        task_obj = Task.objects.get(url=url)
+
+        review = CodeReview()
+        review.student = student_obj
+        review.task = task_obj
+        review.comment = comment
+        review.save()
+        return Response("ok")
+        """
+        users2review[username][url] = comment
+        return Response(users2review[username][url])
