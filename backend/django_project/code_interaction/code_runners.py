@@ -97,8 +97,16 @@ class JsRunner(BaseRunner):
         super().__init__(*args, **kwargs)
         self.launch_command = ["node", f"{self.file_path}/solution.js"]
 
+class RubyRunner(BaseRunner):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.launch_command = ["ruby", f"{self.file_path}/solution.rb"]
+
+
+
 Languages = {
     "Python": PythonRunner,
     "Cpp": CppRunner,
     "JS": JsRunner,
+    "Ruby": RubyRunner
 }
