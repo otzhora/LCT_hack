@@ -14,9 +14,9 @@ import { useState } from 'react';
 import Async from 'react-async';
 
 const solution = {text:""}
+const solutionFile = {text:""}
 function StudentPage(){
   const editorRef = useRef(null)
-  const [solutionFile, setSolutionFile] = useState('')
   const [result, setResult] = useState(null)
   const loadResult = async (name) =>
       fetch(`http://localhost:8000/task/${name}/`,{
@@ -38,14 +38,21 @@ function StudentPage(){
       loadResult('sum') 
   }
   function submitCodeFromFile(){
-    if (solutionFile){
-      solution.text = solutionFile
-      console.log(solution.text)
+    if (solutionFile.text){
+      solution.text = solutionFile.text
+      console.log(solutionFile.text, 'solution')
       loadResult('sum')
     }
+    else console.log('empty file')
   }
   function onFileLoaded(text){
-    setSolutionFile(text)
+    console.log(text, 'filereaded')
+    solutionFile.text = text
+  }
+  function handlePep(tests){
+      if(tests[0].style_result) return <div>{tests[0].style_result}</div>
+      else return null
+    
   }
   function handleResult(result){
     if(result){
@@ -54,8 +61,8 @@ function StudentPage(){
       console.log(failTests)
       const percentage = successfulTests.length / result.length;
       return percentage===1 
-      ? <div>SUCCESS 100%</div> 
-    : <div>FAIL {percentage}{failTests[0].styleResult}</div>
+      ? <div>SUCCESS 100%{handlePep(successfulTests)}</div> 
+    : <div>FAIL {percentage}{handlePep(failTests)}</div>
     }
     else return null
   }

@@ -15,5 +15,6 @@ const TeacherPage = () => {
     </Container>
   );
 }
+//content type form data multi-part from data
 
 export default TeacherPage;
