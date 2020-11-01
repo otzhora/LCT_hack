@@ -3,7 +3,7 @@ from django.urls import path
 from . import views
 
 from .views import ArticleView, TaskView, CodeView, NewTaskView, TasksView, ResultView, AssignView, ReviewView, \
-    AssignedView, GetReviewView
+    AssignedView, GetReviewView, AdvancedView
 
 urlpatterns = [
     path('', ArticleView.as_view(), name='home'),
