@@ -46,6 +46,7 @@ class TaskView(APIView):
 
     def post(self, request, url):
         print(request.body)
+        print(url)
         body = json.loads(request.body)
 
         task = Task.objects.get(url=url)
