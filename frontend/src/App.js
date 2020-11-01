@@ -10,6 +10,7 @@ import AppBar from '@material-ui/core/AppBar';
 import {Toolbar, Button} from '@material-ui/core/';
 import {createMuiTheme} from '@material-ui/core/styles'
 import {ThemeProvider} from '@material-ui/core'
+import AdvancedCheck from './views/AdvancedCheck'
 const theme = createMuiTheme({
   overrides: {
     // Style sheet name ⚛️
@@ -43,9 +44,13 @@ function App() {
             <Button href='/student-page'>
             <span className="button-text">Student Page</span>
             </Button>
+            <Button href='/advanced-check'>
+            <span className="button-text">Advanced Check</span>
+            </Button>
             <Button href='/login'>
             <span className="button-text">Login</span>
             </Button>
+            
             </ThemeProvider> 
           </Toolbar>
         </AppBar>
@@ -56,7 +61,8 @@ function App() {
        </Route>
        <Route path="/teacher-page"><TeacherPage></TeacherPage></Route>
        <Route path="/student-page"><StudentPage></StudentPage></Route>        
-       <Route path="/login"><LoginForm></LoginForm></Route>      
+       <Route path="/login"><LoginForm></LoginForm></Route>  
+       <Route path="/advanced-check"><AdvancedCheck></AdvancedCheck></Route>     
       </Router>  
     </section>
   );
