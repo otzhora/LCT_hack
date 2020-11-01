@@ -14,6 +14,7 @@ function createAdvanceOut(setup, checks, run){
 }
 const AdvancedCheck = (props) => {
   const [url, setUrl] = useState('https://github.com/otzhora/Algorithms');
+  const [data, setData] = useState(undefined);
   const divRef = useRef(null);
   async function renderCheck(){
     console.log(url)
@@ -27,30 +28,15 @@ const AdvancedCheck = (props) => {
       .then(res => res.json())
       .then(res=>{
         console.log(res); 
-        divRef.current = createAdvanceOut(...res)
+        setData(res);
       })
   }
   return (
     <div display="inline" width={"50px"}>
       <input type='text' onValueChange={setUrl} value={url}/>
       <button onClick={renderCheck}>Submit</button>
-      <div ref={divRef}></div>
-      {/* <Async promiseFn={loadTaskText} name={props.name}>
-        {({ data, err, isLoading }) => {
-          if (isLoading) return "Loading..."
-          if (err) return `Something went wrong: ${err.message}`
-
-          if (data)
-            return (
-              <div>
-                <h1>{data.task.title}</h1>
-                {data.task.task}
-                Teacher id
-                {data.task.teacher_id}
-              </div>
-            )
-        }}
-      </Async> */}
+      {data ? createAdvanceOut(data.setup, data.checks, data.run) : null}
+      
     </div>
   );
 }
