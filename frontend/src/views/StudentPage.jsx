@@ -36,13 +36,13 @@ function StudentPage(props){
   function submitCode(){
       solution.text = editorRef.current.editor.getValue()
       console.log(solution.text)
-      loadResult('sum') 
+      loadResult(url) 
   }
   function submitCodeFromFile(){
     if (solutionFile.text){
       solution.text = solutionFile.text
       console.log(solutionFile.text, 'solution')
-      loadResult('sum')
+      loadResult(url)
     }
     else console.log('empty file')
   }
