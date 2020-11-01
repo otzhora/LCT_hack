@@ -9,15 +9,10 @@ const students = [
   'lol'
 ]
 
-// async function loadTasks(){
-  
-// }
-
-
 const TeacherPage = (props) => {
   const [studentResults, setStudentResults] = useState([])
   async function getResult(stud, task){
-    fetch(`http://localhost:8000/results/${stud}/${task}`,{
+    fetch(`http://localhost:8000/results/${stud}/${task}/`,{
         method: 'GET',
       })
         .then(res => (res.ok ? res : Promise.reject(res)))

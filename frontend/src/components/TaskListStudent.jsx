@@ -35,9 +35,9 @@ export default function SimpleList() {
     <div className={classes.root}>
       <List component="nav" aria-label="main mailbox folders">
         {tasks.map(task=>{
-          const url = task.path.split('/').pop()
+          const url = task.title.toLowerCase().replace(' ','')
           return (
-          <ListItemLink href={`#${url}`}>
+          <ListItemLink href={`/student-page/${url}`}>
             <ListItemText primary={task.title}  />
           </ListItemLink>)
         }

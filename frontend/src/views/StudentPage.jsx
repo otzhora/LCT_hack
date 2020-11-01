@@ -12,10 +12,11 @@ import {Button, Container} from '@material-ui/core'
 import ReadFromFile from '../components/ReadFromFile';
 import { useState } from 'react';
 import Async from 'react-async';
+import {getNameFromPath} from '../helpers'
 
 const solution = {text:""}
 const solutionFile = {text:""}
-function StudentPage(){
+function StudentPage(props){
   const editorRef = useRef(null)
   const [result, setResult] = useState(null)
   const loadResult = async (name) =>
@@ -66,9 +67,10 @@ function StudentPage(){
     }
     else return null
   }
-  
+  const url = window.location.href.replace('http://localhost:3000/student-page/','');
   
   useEffect(()=>{editorRef.current.editor.resize()},[])
+  
   return (
     <React.Fragment>
       <TaskListStudent></TaskListStudent>
@@ -76,7 +78,7 @@ function StudentPage(){
         
         <div display="flex">
           
-          <TaskStatement name='sum'></TaskStatement>
+          <TaskStatement name={url}></TaskStatement>
         </div>
         
         <div id="editor">
