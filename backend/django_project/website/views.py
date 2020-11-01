@@ -9,7 +9,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.core import serializers
 
-from .models import Task, Teacher, Student, TaskResult, CodeReview, Clas
+from .models import Task, Teacher, Student, TaskResult, CodeReview
 from .serializers import TaskSerializer
 from code_interaction.code_runners import *
 from code_interaction.code_converters import *
@@ -58,8 +58,10 @@ class TaskView(APIView):
         converter.text_to_code(username, url, text, lang)
 
         task_path = task.path
+        print(task_path)
         solution_path = converter.get_code_path(username, url)
 
+        print(solution_path)
         runner = Languages[lang](solution_path, task_path, hooks={"style"})
         res = runner.run_code()
 
@@ -99,6 +101,7 @@ class NewTaskView(APIView):
         if Task.objects.filter(url=url).exists():
             return Response(f"Task with name {url} already exists")
         title = body["title"][0]
+        teacher = body["teacher"][0]
         desc = body["description"][0]
 
 
@@ -119,12 +122,8 @@ class NewTaskView(APIView):
         task.task = desc
         task.path = task_path
         task.url = url
+        #task.teacher = Teacher.objects.get(name=teacher)
         task.save()
-        try:
-            clas = body["clas"][0]
-            task.clas.add(Clas.objects.get(name=clas))
-        except KeyError:
-            print("nuhai bebru")
 
         return Response("Biba")
 
@@ -136,70 +135,39 @@ class ResultView(APIView):
         res = list(TaskResult.objects.filter(student=student_obj, task=task_obj))
         return Response([i.mark for i in res])
 
-
-class AssignedView(APIView):
-    """
-    GET /assigned/{username} -- list of tasks assigned to user
-    """
-    def get(self, request, username):
-        c = str(Student.objects.get(name=username).Clas)
-        res = list(Task.objects.filter(clas__name=c).values("url", "title"))
-        return Response({"res": res})
+users2assignments = defaultdict(list)
 
 
 class AssignView(APIView):
-    """
-    POST /assign {task_url, clas_name} -- assign task to class
+    def get(self, request, username):
+         return Response(users2assignments[username])
 
-    example:
-        {
-            "task_url": "sum",
-            "clas_name": "2B"
-        }
-    """
     def post(self, request):
         print(request.body)
         body = json.loads(request.body)
-        clas = body["clas_name"]
-        url = body["task_url"]
-        task = Task.objects.get(url=url)
-        task.clas.add(Clas.objects.get(name=clas))
-        return Response("Boba")
+        username = body["username"]
+        url = body["url"]
+        users2assignments[username].append(url)
+        return Response(users2assignments[username])
 
 
-class GetReviewView(APIView):
-    """
-    GET /get_review/{username}/{task_url} - get tasks`s review for username
-    """
-    def get(self, request, username, task_url):
-        student = Student.objects.get(name=username)
-        task = Task.objects.get(url=task_url)
-        if student and task:
-            res = CodeReview.objects.filter(student=student, task=task)
-            return Response(res.values("comment"))
-        else:
-            return Response({"": "No task or student"})
+users2review = defaultdict(dict)
 
 
 class ReviewView(APIView):
-    """
-    POST /review/ {username, task_url, comment}
-    """
+    def get(self, request, username, url):
+        if url in users2review[username]:
+            return Response(users2review[username][url])
+
     def post(self, request):
         body = json.loads(request.body)
         username = body["username"]
-        task_url = body["task_url"]
+        task_url = body["url"]
         comment = body["comment"]
 
-        student_obj = Student.objects.get(name=username)
-        task_obj = Task.objects.get(url=task_url)
+        users2review[username][task_url] = comment
+        return Response(users2review[username][task_url])
 
-        review = CodeReview()
-        review.student = student_obj
-        review.task = task_obj
-        review.comment = comment
-        review.save()
-        return Response("ok")
 
 class AdvancedView(APIView):
     def post(self, request):
