@@ -97,11 +97,24 @@ class JsRunner(BaseRunner):
         super().__init__(*args, **kwargs)
         self.launch_command = ["node", f"{self.file_path}/solution.js"]
 
+
 class RubyRunner(BaseRunner):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.launch_command = ["ruby", f"{self.file_path}/solution.rb"]
 
+
+class HaskellRunner(BaseRunner):
+    def init(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.launch_command = [f"{self.file_path}/solution"]
+        self.hooks.add("pre_run")
+
+    def compile_code(self):
+        subprocess.run(["ghc", f"{self.file_path}/solution.hs"])
+
+    def pre_run(self):
+        self.compile_code()
 
 
 Languages = {
