@@ -8,18 +8,7 @@ class Teacher(models.Model):
         return self.name
 
 
-class Task(models.Model):
-    title = models.CharField(max_length=120)
-    task = models.TextField()
-    path = models.TextField()
-    teacher = models.ForeignKey('Teacher', related_name='tasks', on_delete=models.CASCADE)
-    url = models.SlugField(max_length=130, unique=True, default=0)
-
-    def __str__(self):
-        return self.title
-
-
-class Class(models.Model):
+class Clas(models.Model):
     name = models.CharField(max_length=120)
     teacher = models.ForeignKey('Teacher', related_name='classes', on_delete=models.CASCADE)
 
@@ -27,8 +16,19 @@ class Class(models.Model):
         return self.name
 
 
+class Task(models.Model):
+    title = models.CharField(max_length=120)
+    task = models.TextField()
+    path = models.TextField()
+    clas = models.ManyToManyField(Clas)
+    url = models.SlugField(max_length=130, unique=True, default=0)
+
+    def __str__(self):
+        return self.title
+
+
 class Student(models.Model):
-    #Class = models.ForeignKey('Class', related_name="students", on_delete=models.CASCADE)
+    Clas = models.ForeignKey('Clas', related_name="students", on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
 
     def __str__(self):
